@@ -4,7 +4,7 @@ and send the mail to all recipients
 """
 
 import sys
-
+import os
 # import the smtplib module. It should be included in Python by default
 import smtplib
 
@@ -14,9 +14,14 @@ from string import Template
 # import necessary packages
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
 
-MY_ADDRESS = "emailaddress"
-PASSWORD = "password"
+MY_ADDRESS = "myemailaddress"
+PASSWORD = "mypassword"
+
+filename = "filename"
+filepath = "filepath"
 
 
 # Get contacts file name and message template file name
@@ -56,6 +61,7 @@ def read_template(filename):
 
     return Template(template_file_content)
 
+
 try:
     # set up the SMTP server
     # s = smtplib.SMTP(host='smtp.gmail.com', port=587)
@@ -63,7 +69,6 @@ try:
     s.starttls()    # Encrypt SMTP commnads that follow
 except:
     sys.exit("An error occurred while trying to establish connection with server.")
-
 try:
     s.login(MY_ADDRESS, PASSWORD)
 except:
@@ -85,13 +90,26 @@ def main():
         # setup the parameters of the message
         msg['From']=MY_ADDRESS
         msg['To']=email
+        # msg['Date']=formatdate(localtime=True)
         msg['Subject']="This is TEST"
 
         # add in the message body
         msg.attach(MIMEText(message, 'plain'))
 
+        attachment = open((filepath + filename), "rb")
+
+        part = MIMEBase('application', 'octet-stream')
+        part.set_payload(attachment.read())
+        encoders.encode_base64(part)
+        part.add_header('Content-disposition', "attachment; filename= %s" % os.path.basename(filename))
+
+        msg.attach(part)
+
+        text = msg.as_string()
+
         # send the message via the server set up earlier.
-        s.send_message(msg)
+        # s.send_message(msg)
+        s.sendmail(MY_ADDRESS, email, text)
         del msg
 
     s.quit()

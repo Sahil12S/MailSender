@@ -1,2 +1,2 @@
-testname1 test.mail@yahoo.com
-testname2 testmail@gmail.com
+name1 email1
+name2 email2
