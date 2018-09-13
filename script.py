@@ -17,11 +17,11 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
-MY_ADDRESS = "myemailaddress"
+MY_ADDRESS = "myaddress@email.com"
 PASSWORD = "mypassword"
 
 filename = "filename"
-filepath = "filepath"
+filepath = "/path/"
 
 
 # Get contacts file name and message template file name
